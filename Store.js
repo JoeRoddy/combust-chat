@@ -51,7 +51,7 @@ class ChatStore {
         return console.log(err || "Null msg!");
       }
       if (
-        msg.sentBy !== userStore.userId &&
+        msg.sentBy !== usersStore.userId &&
         msg.createdAt >= new Date() - 5000
       ) {
         this.handleIncomingMessage(msg, convoId);
