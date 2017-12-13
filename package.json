@@ -1,0 +1,15 @@
+{
+  "name": "combust-chat",
+  "version": "1.0.9",
+  "description": "Chat module for the combust cli",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "combust",
+    "chat"
+  ],
+  "author": "mrjoeroddy@gmail.com",
+  "license": "ISC"
+}

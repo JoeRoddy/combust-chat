@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "users": "latest"
+  },
+  "installation": {
+    "components/App.jsx": {
+      "imports": [
+        "import Chatboxes from \"./combust_examples/chat/Chatboxes\";"
+      ],
+      "renderEnd": ["<Chatboxes />"]
+    },
+    "components/combust_examples/users/Profile.jsx": {
+      "imports": ["import chatStore from \"../../../stores/ChatStore\";"],
+      "replace": {
+        "pattern": "alert(\"combust install chat\");\n",
+        "code": ["chatStore.openConversationWithUser(userId);"]
+      }
+    }
+  }
+}
