@@ -132,12 +132,13 @@ export default class Chatbox extends Component {
             className="chat-messages-scrollable"
             id={"messagebox-convoId-" + conversationId}
           >
+            <div className="uk-margin-small-top" />
             {messages &&
               messages.map((m, i) => (
                 <RenderMessage
                   key={i}
                   message={m}
-                  isIncoming={m.sentBy === usersStore.userId}
+                  isIncoming={m.sentBy !== usersStore.userId}
                 />
               ))}
             {usersTyping.length > 0 &&
@@ -192,7 +193,7 @@ export default class Chatbox extends Component {
             {this.state.modalQueryResults.length > 0 &&
               this.state.modalQueryResults.map(u => {
                 return (
-                  <div className="uk-margin-small-top">
+                  <div className="uk-margin-small-top uk-flex uk-flex-between">
                     {u.email}{" "}
                     <button
                       className="uk-button uk-button-primary"
@@ -217,10 +218,10 @@ const RenderMessage = props => {
   return (
     <div
       className={
-        "RenderMessage " + (!isIncoming ? "incomingMsg" : "outgoingMsg")
+        "RenderMessage " + (isIncoming ? "incomingMsg" : "outgoingMsg")
       }
     >
-      {!isIncoming && sentBy && <img className="avatar" src={sentBy.iconUrl} />}
+      {isIncoming && sentBy && <img className="avatar" src={sentBy.iconUrl} />}
       <RenderMessageBubble {...props} />
     </div>
   );
@@ -229,14 +230,25 @@ const RenderMessage = props => {
 const RenderMessageBubble = ({ message, isIncoming }) => {
   return (
     <span
+      title={getTimeString(message.createdAt)}
+      uk-tooltip={"pos: " + (isIncoming ? "left" : "right")}
       className={
         "RenderMessageBubble " +
         (isIncoming
-          ? "uk-text-primary uk-background-secondary"
-          : "uk-background-primary")
+          ? "uk-background-primary"
+          : "uk-text-primary uk-background-secondary")
       }
     >
       {message.body}
     </span>
   );
 };
+
+function getTimeString(dateString) {
+  const date = new Date(dateString);
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  const meridiem = hours >= 12 ? "PM" : "AM";
+  hours = hours >= 13 ? hours - 12 : hours;
+  return `${hours}:${minutes} ${meridiem}`;
+}
