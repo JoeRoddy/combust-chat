@@ -16,6 +16,21 @@ class ChatStore {
   @observable messagesByConversation = new Map();
   @observable messageMap = new Map();
 
+  onIncomingMessageTriggers = [];
+  onIncomingMessage(func) {
+    this.onIncomingMessageTriggers.push(func);
+  }
+
+  handleIncomingMessage(message, conversationId) {
+    try {
+      this.onIncomingMessageTriggers.forEach(event => {
+        event(message, conversationId);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   @action
   loadConversationsForUser = user => {
     chatService.listenToUsersConversationIds(user.id, (err, convoId) => {
@@ -35,6 +50,13 @@ class ChatStore {
       if (err || !msg) {
         return console.log(err || "Null msg!");
       }
+      if (
+        msg.sentBy !== userStore.userId &&
+        msg.createdAt >= new Date() - 5000
+      ) {
+        this.handleIncomingMessage(msg, convoId);
+      }
+
       let messages = this.messagesByConversation.get(convoId) || {};
       messages[msg.id] = msg;
       this.messagesByConversation.set(convoId, _.clone(messages));
@@ -65,6 +87,7 @@ class ChatStore {
           });
           return nonInclusion ? false : true;
         }
+        return false;
       });
     return (existingConvoEntry && existingConvoEntry[1]) || null;
   }
@@ -81,7 +104,7 @@ class ChatStore {
   openConversationWithUsers(friendIds) {
     const existingConvo = this.findExistingConversationWithParticipants(
       friendIds
-    ); //TODO: fix this, make it accept an array as well
+    );
     if (existingConvo) {
       this.markConvoAsOpen(existingConvo.id);
       this.loadMessagesForConversation(existingConvo.id);
@@ -130,8 +153,8 @@ class ChatStore {
 
   /**
    * sets the user's typing status in a conversation
-   * @param {string} convoId 
-   * @param {boolean} isTyping 
+   * @param {string} convoId
+   * @param {boolean} isTyping
    */
   toggleUserTyping(convoId, isTyping) {
     const userId = usersStore.userId;
@@ -141,9 +164,9 @@ class ChatStore {
   /**
    * returns an array of users typing, denoted by the chosen field
    * (default: email)
-   * @param {string} convoId 
+   * @param {string} convoId
    * @param {string} userFieldToReturn
-   * @return {array} 
+   * @return {array}
    */
   getUsersTypingByField(convoId, userFieldToReturn) {
     userFieldToReturn = userFieldToReturn || "email";
@@ -194,7 +217,6 @@ class ChatStore {
   }
 
   getOtherParticipantIdsInConversation(conversation) {
-    const myid = usersStore.userId;
     const participants =
       conversation && conversation.participants
         ? Object.keys(conversation.participants)
