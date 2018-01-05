@@ -76,11 +76,15 @@ class ChatStore {
 
   @action
   findExistingConversationWithParticipants(friendIds) {
+    const isGroupConvo = friendIds.length > 1;
     const existingConvoEntry = this.conversationMap
       .entries()
       .find(([convoId, convo]) => {
         const participants =
           convo && convo.participants && Object.keys(convo.participants);
+        if (!isGroupConvo && participants.length !== 2) {
+          return false; //exclude group convos when looking for 1to1
+        }
         if (participants && participants.length === friendIds.length + 1) {
           let nonInclusion = friendIds.find(fid => {
             return !participants.includes(fid);
