@@ -1,30 +1,21 @@
-import React, { Component } from "react";
+import React from "react";
 import { observer } from "mobx-react";
 
 import chatStore from "../../../stores/ChatStore";
 import Chatbox from "./Chatbox";
 import "./styles/Chat.css";
 
-@observer
-export default class Chatboxes extends Component {
-  state = {};
+const Chatboxes = observer(() => {
+  const convoIds = chatStore.openConversationIds;
 
-  componentWillMount() {
-    const openConversation = user => {
-      chatStore.openConversationWithUser(user.id);
-    };
-  }
+  return (
+    <div className="Chatboxes">
+      {convoIds &&
+        convoIds.map((convoId, i) => {
+          return <Chatbox key={i} conversationId={convoId} />;
+        })}
+    </div>
+  );
+});
 
-  render() {
-    const convoIds = chatStore.openConversationIds;
-
-    return (
-      <div className="Chatboxes">
-        {convoIds &&
-          convoIds.map((convoId, i) => {
-            return <Chatbox key={i} conversationId={convoId} />;
-          })}
-      </div>
-    );
-  }
-}
+export default Chatboxes;

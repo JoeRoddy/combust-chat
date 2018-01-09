@@ -76,15 +76,11 @@ class ChatStore {
 
   @action
   findExistingConversationWithParticipants(friendIds) {
-    const isGroupConvo = friendIds.length > 1;
     const existingConvoEntry = this.conversationMap
       .entries()
       .find(([convoId, convo]) => {
         const participants =
           convo && convo.participants && Object.keys(convo.participants);
-        if (!isGroupConvo && participants.length !== 2) {
-          return false; //exclude group convos when looking for 1to1
-        }
         if (participants && participants.length === friendIds.length + 1) {
           let nonInclusion = friendIds.find(fid => {
             return !participants.includes(fid);
@@ -167,13 +163,13 @@ class ChatStore {
 
   /**
    * returns an array of users typing, denoted by the chosen field
-   * (default: email)
+   * (default: displayName)
    * @param {string} convoId
    * @param {string} userFieldToReturn
    * @return {array}
    */
   getUsersTypingByField(convoId, userFieldToReturn) {
-    userFieldToReturn = userFieldToReturn || "email";
+    userFieldToReturn = userFieldToReturn || "displayName";
     let usersTyping = [];
     const conversation = this.getConversation(convoId);
     conversation &&
@@ -190,23 +186,18 @@ class ChatStore {
     return usersTyping;
   }
 
-  getConvoTitle(convoId) {
+  getUsersInConvo(convoId) {
     let currentConvo = this.conversationMap.get(convoId);
-    if (!currentConvo) {
-      return "Chat";
-    }
-    let usersInChat = [];
-    for (let uid in currentConvo.participants) {
-      if (uid !== usersStore.userId) {
-        const user = usersStore.getUserById(uid);
-        user && usersInChat.push(user);
-      }
-    }
-    let title = "";
-    usersInChat.forEach((f, i) => {
-      title += f.email + (i < usersInChat.length - 1 ? ", " : "");
-    });
-    return title;
+    let users = [];
+    currentConvo &&
+      currentConvo.participants &&
+      Object.keys(currentConvo.participants).forEach(uid => {
+        if (uid !== usersStore.userId) {
+          let user = usersStore.getUserById(uid);
+          if (user) users.push(user);
+        }
+      });
+    return users;
   }
 
   conversationContainsNewMessages(convoId, conversation) {
