@@ -1,9 +1,8 @@
 import { observable, action } from "mobx";
-import chatService from "../service/ChatService";
-import usersStore from "./UsersStore";
 import _ from "lodash";
 
-//DEPENDENCIES: Users
+import chatService from "../service/ChatService";
+import usersStore from "./UsersStore";
 
 class ChatStore {
   subscribeToEvents() {

@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { observer } from "mobx-react";
 import UIkit from "uikit";
 
-import chatStore from "../../../stores/ChatStore";
-import usersStore from "../../../stores/UsersStore";
+import chatStore from "../../stores/ChatStore";
+import usersStore from "../../stores/UsersStore";
 
 @observer
 export default class Chatbox extends Component {
