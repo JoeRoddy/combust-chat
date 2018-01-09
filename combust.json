@@ -4,7 +4,7 @@
       "imports": ["import Chatboxes from \"./chat/Chatboxes\";"],
       "renderEnd": ["<Chatboxes />"]
     },
-    "components/combust_examples/users/Profile.jsx": {
+    "components/users/Profile.jsx": {
       "imports": ["import chatStore from \"../../stores/ChatStore\";"],
       "replace": {
         "pattern": "alert(\"combust install chat\");\n",
