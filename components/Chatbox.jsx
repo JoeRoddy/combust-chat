@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
 import UIkit from "uikit";
+import { Link } from "react-router-dom";
 
 import chatStore from "../../stores/ChatStore";
 import usersStore from "../../stores/UsersStore";
@@ -75,7 +76,7 @@ export default class Chatbox extends Component {
   handleModalQuery = e => {
     const modalQuery = e.target.value;
     const modalQueryResults = usersStore.searchFromLocalUsersByField(
-      "email",
+      "displayName",
       modalQuery
     );
     this.setState({ modalQuery, modalQueryResults });
@@ -86,9 +87,11 @@ export default class Chatbox extends Component {
     const messages = chatStore.getMessages(conversationId);
     const usersTyping = chatStore.getUsersTypingByField(
       conversationId,
-      "email"
+      "displayName"
     );
-    const convoTitle = chatStore.getConvoTitle(conversationId);
+
+    // const convoTitle = chatStore.getConvoTitle(conversationId);
+    const usersInConvo = chatStore.getUsersInConvo(conversationId);
 
     if (messages.length !== this.messageLength) {
       //new message, scroll to bottom
@@ -100,12 +103,19 @@ export default class Chatbox extends Component {
       <div className="Chatbox">
         <div className="chat-header uk-light uk-flex uk-flex-between">
           <span>
-            {/* {
-              <span
-                className={"isOnline " + (user.online ? "online" : "offline")}
-              />
-            } */}
-            <div className="convo-title">{convoTitle}</div>
+            <div className="convo-title">
+              {usersInConvo &&
+                usersInConvo.map((user, i) => {
+                  return user ? (
+                    <Link key={i} to={"/profile/" + user.id}>
+                      {user.displayName}
+                      {i < usersInConvo.length - 1 ? "," : ""}
+                    </Link>
+                  ) : (
+                    <span />
+                  );
+                })}
+            </div>
           </span>
           <span>
             <button
@@ -142,8 +152,8 @@ export default class Chatbox extends Component {
                 />
               ))}
             {usersTyping.length > 0 &&
-              usersTyping.map(email => {
-                return <span>{email} is typing..</span>;
+              usersTyping.map((email, i) => {
+                return <span key={i}>{email} is typing..</span>;
               })}
           </div>
         </div>
@@ -167,16 +177,14 @@ export default class Chatbox extends Component {
           <div className="uk-modal-dialog uk-modal-body">
             <h2 className="uk-modal-title">Add Users</h2>
             <button
-              class="uk-modal-close-default"
+              className="uk-modal-close-default"
               type="button"
               uk-close="true"
               title="Close"
               uk-tooltip="true"
             />
             <div className="uk-margin">
-              <label className="uk-form-label" for="form-stacked-text">
-                Search by email
-              </label>
+              <label className="uk-form-label">Search by email</label>
               <div className="uk-form-controls">
                 <input
                   ref="modalInput"
@@ -191,9 +199,12 @@ export default class Chatbox extends Component {
               </div>
             </div>
             {this.state.modalQueryResults.length > 0 &&
-              this.state.modalQueryResults.map(u => {
+              this.state.modalQueryResults.map((u, i) => {
                 return (
-                  <div className="uk-margin-small-top uk-flex uk-flex-between">
+                  <div
+                    key={i}
+                    className="uk-margin-small-top uk-flex uk-flex-between"
+                  >
                     {u.email}{" "}
                     <button
                       className="uk-button uk-button-primary"
@@ -221,7 +232,7 @@ const RenderMessage = props => {
         "RenderMessage " + (isIncoming ? "incomingMsg" : "outgoingMsg")
       }
     >
-      {isIncoming && sentBy && <img className="avatar" src={sentBy.iconUrl} />}
+      {isIncoming && sentBy && <img alt="user avatar" className="avatar" src={sentBy.iconUrl} />}
       <RenderMessageBubble {...props} />
     </div>
   );
@@ -234,9 +245,7 @@ const RenderMessageBubble = ({ message, isIncoming }) => {
       uk-tooltip={"pos: " + (isIncoming ? "left" : "right")}
       className={
         "RenderMessageBubble " +
-        (isIncoming
-          ? "uk-background-primary"
-          : "uk-text-primary uk-background-secondary")
+        (isIncoming ? "uk-background-primary" : "outgoingBubble")
       }
     >
       {message.body}

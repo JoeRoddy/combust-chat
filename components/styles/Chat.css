@@ -1,82 +1,84 @@
 .Chatboxes {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    margin-left: 15px;
-    margin-right: 270px;
-    display: flex;
-    flex-direction: row-reverse;
-    z-index: 9001; }
-  
-  .Chatbox {
-    position: relative;
-    background-color: white;
-    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
-    height: 333px;
-    width: 260px;
-    margin-left: 30px;
-    overflow: hidden; }
-    .Chatbox .chat-header {
-      background-color: #2b66e4;
-      height: 26px;
-      width: 100%; }
-      .Chatbox .chat-header .convo-title {
-        padding-left: 5px;
-        color: white; }
-      .Chatbox .chat-header button {
-        padding-right: 5px; }
-      .Chatbox .chat-header a {
-        padding-right: 5px; }
-    .Chatbox .chat-messages {
-      overflow: hidden;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin-left: 15px;
+  margin-right: 270px;
+  display: flex;
+  flex-direction: row-reverse;
+  z-index: 2; }
+
+.Chatbox {
+  position: relative;
+  background-color: white;
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+  height: 333px;
+  width: 260px;
+  margin-left: 30px;
+  overflow: hidden; }
+  .Chatbox .chat-header {
+    background-color: #2b66e4;
+    height: 26px;
+    width: 100%; }
+    .Chatbox .chat-header .convo-title {
       padding-left: 5px;
-      height: 267px;
-      width: 100%; }
-      .Chatbox .chat-messages .chat-messages-scrollable {
-        height: 100%;
-        width: 100%;
-        padding-right: 5px;
-        overflow-y: scroll;
-        display: flex;
-        flex-direction: column; }
-    .Chatbox .RenderMessage {
-      margin-bottom: 4px;
-      max-width: 80%; }
-      .Chatbox .RenderMessage .avatar {
-        height: 25px;
-        width: 25px;
-        margin-right: 3px; }
-    .Chatbox .RenderMessageBubble {
-      padding: 4px 9px;
-      border-radius: 12px;
-      word-wrap: break-word; }
-    .Chatbox .outgoingMsg {
-      align-self: flex-end; }
-    .Chatbox .incomingMsg {
-      color: white;
-      align-self: flex-start; }
-    .Chatbox .message-input {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 40px;
+      color: white; }
+    .Chatbox .chat-header button {
+      padding-right: 5px; }
+    .Chatbox .chat-header a {
+      padding-right: 5px; }
+  .Chatbox .chat-messages {
+    overflow: hidden;
+    padding-left: 5px;
+    height: 267px;
+    width: 100%; }
+    .Chatbox .chat-messages .chat-messages-scrollable {
+      height: 100%;
+      width: 100%;
+      padding-right: 5px;
+      overflow-y: scroll;
       display: flex;
-      align-items: center; }
-      .Chatbox .message-input input {
-        padding: 5px;
-        margin: 0;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        -o-box-sizing: border-box;
-        -ms-box-sizing: border-box;
-        box-sizing: border-box;
-        width: 100%;
-        height: 100%;
-        padding-right: 30px; }
-      .Chatbox .message-input span {
-        cursor: pointer;
-        position: absolute;
-        right: 5px;
-        text-align: center; }
-  
+      flex-direction: column; }
+  .Chatbox .RenderMessage {
+    margin-bottom: 4px;
+    max-width: 80%; }
+    .Chatbox .RenderMessage .avatar {
+      height: 25px;
+      width: 25px;
+      margin-right: 3px; }
+  .Chatbox .RenderMessageBubble {
+    padding: 4px 9px;
+    border-radius: 12px;
+    word-wrap: break-word; }
+  .Chatbox .outgoingBubble {
+    background-color: #f5f1f1;
+    color: black; }
+  .Chatbox .outgoingMsg {
+    align-self: flex-end; }
+  .Chatbox .incomingMsg {
+    color: white;
+    align-self: flex-start; }
+  .Chatbox .message-input {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    display: flex;
+    align-items: center; }
+    .Chatbox .message-input input {
+      padding: 5px;
+      margin: 0;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -o-box-sizing: border-box;
+      -ms-box-sizing: border-box;
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
+      padding-right: 30px; }
+    .Chatbox .message-input span {
+      cursor: pointer;
+      position: absolute;
+      right: 5px;
+      text-align: center; }
