@@ -17,6 +17,7 @@ export default class Chatbox extends Component {
 
   messageLength = 0;
   shouldScroll = false;
+  usersTyping = [];
 
   componentDidMount() {
     this.scrollToBottom();
@@ -84,19 +85,24 @@ export default class Chatbox extends Component {
 
   render() {
     const { conversationId } = this.props;
+    const usersInConvo = chatStore.getUsersInConvo(conversationId);
+
     const messages = chatStore.getMessages(conversationId);
     const usersTyping = chatStore.getUsersTypingByField(
       conversationId,
       "displayName"
     );
-
-    // const convoTitle = chatStore.getConvoTitle(conversationId);
-    const usersInConvo = chatStore.getUsersInConvo(conversationId);
-
-    if (messages.length !== this.messageLength) {
-      //new message, scroll to bottom
+    if (
+      messages.length !== this.messageLength ||
+      usersTyping.length !== this.usersTyping.length
+    ) {
+      //new message / userTyping status, scroll to bottom
       this.shouldScroll = true;
+      //TODO: This method triggers two renders.
+      //Maybe someone smarter than me can fix this.
     }
+
+    this.usersTyping = usersTyping;
     this.messageLength = messages.length;
 
     return (
@@ -205,7 +211,7 @@ export default class Chatbox extends Component {
                     key={i}
                     className="uk-margin-small-top uk-flex uk-flex-between"
                   >
-                    {u.email}{" "}
+                    {u.displayName}{" "}
                     <button
                       className="uk-button uk-button-primary"
                       onClick={e => this.addUserToConvo(u)}
@@ -232,7 +238,10 @@ const RenderMessage = props => {
         "RenderMessage " + (isIncoming ? "incomingMsg" : "outgoingMsg")
       }
     >
-      {isIncoming && sentBy && <img alt="user avatar" className="avatar" src={sentBy.iconUrl} />}
+      {isIncoming &&
+        sentBy && (
+          <img alt="user avatar" className="avatar" src={sentBy.iconUrl} />
+        )}
       <RenderMessageBubble {...props} />
     </div>
   );
