@@ -22,7 +22,8 @@
     "conversations": {
       "$convoId": {
         ".read": "data.child('participants').child(auth.uid).exists()",
-        ".write": "data.child('participants').child(auth.uid).exists()"
+        ".write":
+          "!data.exists() || data.child('participants').child(auth.uid).exists()"
       }
     },
     "messages": {
