@@ -1,6 +1,6 @@
 {
   "name": "combust-chat",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "Chat module for the combust cli",
   "main": "index.js",
   "scripts": {
