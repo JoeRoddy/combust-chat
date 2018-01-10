@@ -15,8 +15,10 @@
   "rules": {
     "conversationsByUser": {
       "$uid": {
-        ".write": "!data.exists()",
-        ".read": true
+        ".read": "$uid === auth.uid",
+        "$convoId": {
+          ".write": "!data.exists()"
+        }
       }
     },
     "conversations": {
