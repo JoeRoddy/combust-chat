@@ -7,10 +7,10 @@ class ChatService {
     }
     message.createdAt = new Date().getTime();
     let db = firebase.database();
-    let msgRef = db.ref("messages").push();
+    let msgRef = db.ref("chat/messages").push();
     let msgId = msgRef.key;
     msgRef.set(message);
-    db.ref("conversations/" + convoId + "/messages/" + msgId).set(true);
+    db.ref("chat/conversations/" + convoId + "/messages/" + msgId).set(true);
   }
 
   addParticipantToConversation(userId, conversationId) {
@@ -19,7 +19,7 @@ class ChatService {
     }
     const db = firebase.database();
     db
-      .ref("conversations")
+      .ref("chat/conversations")
       .child(conversationId)
       .child("participants")
       .update({
@@ -28,7 +28,7 @@ class ChatService {
         }
       });
     db
-      .ref("conversationsByUser")
+      .ref("chat/conversationsByUser")
       .child(userId)
       .update({ [conversationId]: true });
   }
@@ -39,7 +39,7 @@ class ChatService {
     }
     let db = firebase.database();
     db
-      .ref("conversations/" + convoId + "/messages")
+      .ref("chat/conversations/" + convoId + "/messages")
       .on("child_added", snapshot => {
         let msgId = snapshot.key;
         this.getMessage(msgId, callback);
@@ -49,7 +49,7 @@ class ChatService {
   getMessage(msgId, callback) {
     firebase
       .database()
-      .ref("messages")
+      .ref("chat/messages")
       .child(msgId)
       .once("value", snap => {
         let msg = snap.val();
@@ -67,7 +67,7 @@ class ChatService {
     }
     let ref = firebase
       .database()
-      .ref("conversations/" + convoId + "/participants/" + userId)
+      .ref("chat/conversations/" + convoId + "/participants/" + userId)
       .child("isTyping");
     ref.set(isTyping);
   }
@@ -77,7 +77,7 @@ class ChatService {
       return;
     }
     let db = firebase.database();
-    db.ref("conversations/" + convoId).on("value", snapshot => {
+    db.ref("chat/conversations/" + convoId).on("value", snapshot => {
       let convo = snapshot.val();
       // if (!convo) {
       //   return callback(null);
@@ -89,7 +89,7 @@ class ChatService {
 
   createConversation(users, callback) {
     let db = firebase.database();
-    let cRef = db.ref("conversations").push();
+    let cRef = db.ref("chat/conversations").push();
     let convoId = cRef.key;
     let participants = {};
     users.forEach(u => {
@@ -102,7 +102,7 @@ class ChatService {
       type: "dm"
     });
     users.forEach(u => {
-      db.ref("conversationsByUser/" + u + "/" + convoId).set(true);
+      db.ref("chat/conversationsByUser/" + u + "/" + convoId).set(true);
     });
     callback(null, convoId);
     //TODO: notify
@@ -111,7 +111,7 @@ class ChatService {
   listenToUsersConversationIds(userId, callback) {
     firebase
       .database()
-      .ref("conversationsByUser")
+      .ref("chat/conversationsByUser")
       .child(userId)
       .on("child_added", snap => {
         let convoId = snap.key;
