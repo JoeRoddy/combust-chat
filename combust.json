@@ -11,5 +11,25 @@
         "code": ["chatStore.openConversationWithUser(userId);"]
       }
     }
+  },
+  "rules": {
+    "conversationsByUser": {
+      "$uid": {
+        ".write": "!data.exists()",
+        ".read": true
+      }
+    },
+    "conversations": {
+      "$convoId": {
+        ".read": "data.child('participants').child(auth.uid).exists()",
+        ".write": "data.child('participants').child(auth.uid).exists()"
+      }
+    },
+    "messages": {
+      "$msgId": {
+        ".write": "!data.exists()",
+        ".read": true
+      }
+    }
   }
 }
