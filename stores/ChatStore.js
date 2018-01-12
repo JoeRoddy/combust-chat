@@ -16,6 +16,8 @@ class ChatStore {
   @observable messageMap = new Map();
 
   onIncomingMessageTriggers = [];
+
+  @action
   onIncomingMessage(func) {
     this.onIncomingMessageTriggers.push(func);
   }
@@ -30,7 +32,6 @@ class ChatStore {
     }
   }
 
-  @action
   loadConversationsForUser = user => {
     chatService.listenToUsersConversationIds(user.id, (err, convoId) => {
       err ? console.log(err) : this.listenToConversation(convoId);
@@ -73,7 +74,6 @@ class ChatStore {
     });
   };
 
-  @action
   findExistingConversationWithParticipants(friendIds) {
     const existingConvoEntry = this.conversationMap
       .entries()
@@ -100,10 +100,12 @@ class ChatStore {
     chatService.sendMessage(conversationId, message);
   }
 
+  @action
   openConversationWithUsers(friendIds) {
     const existingConvo = this.findExistingConversationWithParticipants(
       friendIds
     );
+    debugger;
     if (existingConvo) {
       this.markConvoAsOpen(existingConvo.id);
       this.loadMessagesForConversation(existingConvo.id);
@@ -120,6 +122,7 @@ class ChatStore {
     this.openConversationWithUsers([friendId]);
   }
 
+  @action
   markConvoAsOpen(convoId) {
     if (!this.openConversationIds.includes(convoId)) {
       this.openConversationIds.push(convoId);
@@ -129,6 +132,7 @@ class ChatStore {
     }
   }
 
+  @action
   markConvoAsClosed(convoId) {
     let i = this.openConversationIds.findIndex(iteratorId => {
       return convoId === iteratorId;
@@ -161,7 +165,7 @@ class ChatStore {
   }
 
   /**
-   * returns an array of users typing, denoted by the chosen field
+   * returns an array of users typing, filtered by the chosen field
    * (default: displayName)
    * @param {string} convoId
    * @param {string} userFieldToReturn
@@ -222,10 +226,13 @@ class ChatStore {
   }
 
   addParticipantToConversation(userId, conversationId) {
-    chatService.addParticipantToConversation(userId, conversationId);
+    const convo = this.conversationMap.get(conversationId);
+    let participants = this.getOtherParticipantIdsInConversation(convo);
+    participants.push(userId);
+    this.markConvoAsClosed(conversationId);
+    this.openConversationWithUsers(participants);
   }
 }
 
 const chatStore = new ChatStore();
-
 export default chatStore;

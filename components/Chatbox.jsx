@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
-import UIkit from "uikit";
 import { Link } from "react-router-dom";
+import UIkit from "uikit";
+import moment from "moment";
 
 import chatStore from "../../stores/ChatStore";
 import usersStore from "../../stores/UsersStore";
+import { formatDate } from "../../helpers/DateHelper";
 
 @observer
 export default class Chatbox extends Component {
@@ -17,7 +19,6 @@ export default class Chatbox extends Component {
 
   messageLength = 0;
   shouldScroll = false;
-  usersTyping = [];
 
   componentDidMount() {
     this.scrollToBottom();
@@ -85,29 +86,24 @@ export default class Chatbox extends Component {
 
   render() {
     const { conversationId } = this.props;
-    const usersInConvo = chatStore.getUsersInConvo(conversationId);
-
     const messages = chatStore.getMessages(conversationId);
     const usersTyping = chatStore.getUsersTypingByField(
       conversationId,
       "displayName"
     );
-    if (
-      messages.length !== this.messageLength ||
-      usersTyping.length !== this.usersTyping.length
-    ) {
-      //new message / userTyping status, scroll to bottom
-      this.shouldScroll = true;
-      //TODO: This method triggers two renders.
-      //Maybe someone smarter than me can fix this.
-    }
 
-    this.usersTyping = usersTyping;
+    // const convoTitle = chatStore.getConvoTitle(conversationId);
+    const usersInConvo = chatStore.getUsersInConvo(conversationId);
+
+    if (messages.length !== this.messageLength) {
+      //new message, scroll to bottom
+      this.shouldScroll = true;
+    }
     this.messageLength = messages.length;
 
     return (
       <div className="Chatbox">
-        <div className="chat-header uk-light uk-flex uk-flex-between">
+        <div className="chat-header uk-light uk-flex uk-flex-between uk-background-primary">
           <span>
             <div className="convo-title">
               {usersInConvo &&
@@ -211,7 +207,7 @@ export default class Chatbox extends Component {
                     key={i}
                     className="uk-margin-small-top uk-flex uk-flex-between"
                   >
-                    {u.displayName}{" "}
+                    {u.email}{" "}
                     <button
                       className="uk-button uk-button-primary"
                       onClick={e => this.addUserToConvo(u)}
@@ -248,9 +244,11 @@ const RenderMessage = props => {
 };
 
 const RenderMessageBubble = ({ message, isIncoming }) => {
+  const timeStamp = formatDate(message.createdAt);
+
   return (
     <span
-      title={getTimeString(message.createdAt)}
+      title={timeStamp}
       uk-tooltip={"pos: " + (isIncoming ? "left" : "right")}
       className={
         "RenderMessageBubble " +
@@ -261,12 +259,3 @@ const RenderMessageBubble = ({ message, isIncoming }) => {
     </span>
   );
 };
-
-function getTimeString(dateString) {
-  const date = new Date(dateString);
-  let hours = date.getHours();
-  const minutes = date.getMinutes();
-  const meridiem = hours >= 12 ? "PM" : "AM";
-  hours = hours >= 13 ? hours - 12 : hours;
-  return `${hours}:${minutes} ${meridiem}`;
-}
