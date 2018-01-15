@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { observer } from "mobx-react";
 import { Link } from "react-router-dom";
 import UIkit from "uikit";
-import moment from "moment";
 
 import chatStore from "../../stores/ChatStore";
 import usersStore from "../../stores/UsersStore";
