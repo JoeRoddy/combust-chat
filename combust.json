@@ -5,7 +5,7 @@
   "installation": {
     "components/App.jsx": {
       "imports": ["import Chatboxes from \"./chat/Chatboxes\";"],
-      "renderEnd": ["<Chatboxes />"]
+      "renderEnd": ["<Chatboxes {...this.props} />"]
     },
     "components/users/Profile.jsx": {
       "imports": ["import chatStore from \"../../stores/ChatStore\";"],

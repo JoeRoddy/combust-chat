@@ -4,12 +4,14 @@ import { observer } from "mobx-react";
 import chatStore from "../../stores/ChatStore";
 import Chatbox from "./Chatbox";
 import "./styles/Chat.css";
+import { database } from "firebase";
 
-const Chatboxes = observer(() => {
+const Chatboxes = observer(({ history }) => {
   const convoIds = chatStore.openConversationIds;
+  const marginRight = history.location.pathname === "/" ? 270 : 20;
 
   return (
-    <div className="Chatboxes">
+    <div className="Chatboxes" style={{ marginRight }}>
       {convoIds &&
         convoIds.map((convoId, i) => {
           return <Chatbox key={i} conversationId={convoId} />;
