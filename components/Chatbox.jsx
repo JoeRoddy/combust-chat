@@ -5,7 +5,7 @@ import UIkit from "uikit";
 
 import Avatar from "../reusable/Avatar";
 import chatStore from "../../stores/ChatStore";
-import userStore, { displayNameField } from "../../stores/UserStore";
+import userStore from "../../stores/UserStore";
 import userSearchService from "../../service/UserSearchService";
 import { formatDate } from "../../helpers/DateHelper";
 
@@ -81,7 +81,7 @@ export default class Chatbox extends Component {
     const newUserQuery = e.target.value;
     const newUserQueryResults = userSearchService.searchByField(
       newUserQuery,
-      displayNameField
+      "displayName"
     );
     this.setState({ newUserQuery, newUserQueryResults });
   };
@@ -193,9 +193,7 @@ export default class Chatbox extends Component {
               uk-tooltip="true"
             />
             <div className="uk-margin">
-              <label className="uk-form-label">
-                Search by {displayNameField}
-              </label>
+              <label className="uk-form-label">Find others to chat with</label>
               <div className="uk-form-controls">
                 <input
                   ref="modalInput"
@@ -203,7 +201,7 @@ export default class Chatbox extends Component {
                   className="uk-input"
                   id="form-stacked-text"
                   type="text"
-                  placeholder="Email..."
+                  placeholder="Search for users..."
                   value={this.state.newUserQuery}
                   onChange={this.handleUserQuery}
                 />
