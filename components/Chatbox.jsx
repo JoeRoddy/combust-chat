@@ -219,7 +219,7 @@ export default class Chatbox extends Component {
                     key={i}
                     className="uk-margin-small-top uk-flex uk-flex-between"
                   >
-                    {u.email}{" "}
+                    {u.displayName}{" "}
                     <button
                       className="uk-button uk-button-primary"
                       onClick={e => this.addUserToConvo(u)}
