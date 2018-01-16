@@ -7,6 +7,7 @@ import userStore from "./UserStore";
 class ChatStore {
   init() {
     userStore.onLogin(this.loadConversationsForUser.bind(this));
+    userStore.onLogout(this.closeAllConversations.bind(this));
   }
 
   @observable openConversationIds = [];
@@ -137,6 +138,11 @@ class ChatStore {
       return convoId === iteratorId;
     });
     i >= 0 && this.openConversationIds.splice(i, 1);
+  }
+
+  @action
+  closeAllConversations() {
+    this.openConversationIds = [];
   }
 
   getConversation(convoId) {
