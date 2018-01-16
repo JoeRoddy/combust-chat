@@ -19,6 +19,7 @@ export default class Chatbox extends Component {
 
   messageLength = 0;
   shouldScroll = false;
+  usersTyping = [];
 
   componentDidMount() {
     this.scrollToBottom();
@@ -92,13 +93,17 @@ export default class Chatbox extends Component {
       "displayName"
     );
 
-    // const convoTitle = chatStore.getConvoTitle(conversationId);
     const usersInConvo = chatStore.getUsersInConvo(conversationId);
 
-    if (messages.length !== this.messageLength) {
-      //new message, scroll to bottom
+    if (
+      messages.length !== this.messageLength ||
+      usersTyping.length !== this.usersTyping.length
+    ) {
+      //new content, scroll to bottom
       this.shouldScroll = true;
     }
+
+    this.usersTyping = usersTyping;
     this.messageLength = messages.length;
 
     return (
