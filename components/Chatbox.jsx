@@ -3,6 +3,7 @@ import { observer } from "mobx-react";
 import { Link } from "react-router-dom";
 import UIkit from "uikit";
 
+import Avatar from "../reusable/Avatar";
 import chatStore from "../../stores/ChatStore";
 import userStore from "../../stores/UserStore";
 import { formatDate } from "../../helpers/DateHelper";
@@ -233,10 +234,7 @@ const RenderMessage = props => {
         "RenderMessage " + (isIncoming ? "incomingMsg" : "outgoingMsg")
       }
     >
-      {isIncoming &&
-        sentBy && (
-          <img alt="user avatar" className="avatar" src={sentBy.iconUrl} />
-        )}
+      {isIncoming && sentBy && <Avatar src={sentBy.iconUrl} height={25} />}
       <RenderMessageBubble {...props} />
     </div>
   );
