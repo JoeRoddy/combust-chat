@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import UIkit from "uikit";
 
 import chatStore from "../../stores/ChatStore";
-import usersStore from "../../stores/UsersStore";
+import userStore from "../../stores/UserStore";
 import { formatDate } from "../../helpers/DateHelper";
 
 @observer
@@ -76,7 +76,7 @@ export default class Chatbox extends Component {
 
   handleModalQuery = e => {
     const modalQuery = e.target.value;
-    const modalQueryResults = usersStore.searchFromLocalUsersByField(
+    const modalQueryResults = userStore.searchFromLocalUsersByField(
       "displayName",
       modalQuery
     );
@@ -149,7 +149,7 @@ export default class Chatbox extends Component {
                 <RenderMessage
                   key={i}
                   message={m}
-                  isIncoming={m.sentBy !== usersStore.userId}
+                  isIncoming={m.sentBy !== userStore.userId}
                 />
               ))}
             {usersTyping.length > 0 &&
@@ -225,7 +225,7 @@ export default class Chatbox extends Component {
 
 const RenderMessage = props => {
   const { isIncoming, message } = props;
-  const sentBy = usersStore.getUserById(message.sentBy);
+  const sentBy = userStore.getUserById(message.sentBy);
 
   return (
     <div

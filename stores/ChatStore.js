@@ -2,12 +2,11 @@ import { observable, action } from "mobx";
 import _ from "lodash";
 
 import chatService from "../service/ChatService";
-import usersStore from "./UsersStore";
+import userStore from "./UserStore";
 
 class ChatStore {
-  subscribeToEvents() {
-    //must be inline functions, or use .bind(this)
-    usersStore.onLogin(this.loadConversationsForUser.bind(this));
+  init() {
+    userStore.onLogin(this.loadConversationsForUser.bind(this));
   }
 
   @observable openConversationIds = [];
@@ -51,7 +50,7 @@ class ChatStore {
         return console.log(err || "Null msg!");
       }
       if (
-        msg.sentBy !== usersStore.userId &&
+        msg.sentBy !== userStore.userId &&
         msg.createdAt >= new Date() - 5000
       ) {
         this.handleIncomingMessage(msg, convoId);
@@ -92,7 +91,7 @@ class ChatStore {
   }
 
   sendMessage(conversationId, messageBody) {
-    const userId = usersStore.userId;
+    const userId = userStore.userId;
     const message = {
       body: messageBody,
       sentBy: userId
@@ -110,7 +109,7 @@ class ChatStore {
       this.markConvoAsOpen(existingConvo.id);
       this.loadMessagesForConversation(existingConvo.id);
     } else {
-      const participants = friendIds.concat([usersStore.userId]);
+      const participants = friendIds.concat([userStore.userId]);
       chatService.createConversation(participants, (err, convoId) => {
         this.markConvoAsOpen(convoId);
         this.loadMessagesForConversation(convoId);
@@ -160,7 +159,7 @@ class ChatStore {
    * @param {boolean} isTyping
    */
   toggleUserTyping(convoId, isTyping) {
-    const userId = usersStore.userId;
+    const userId = userStore.userId;
     chatService.toggleUserTyping(convoId, userId, isTyping);
   }
 
@@ -179,10 +178,10 @@ class ChatStore {
       conversation.participants &&
       Object.keys(conversation.participants).forEach(uid => {
         if (
-          uid !== usersStore.userId &&
+          uid !== userStore.userId &&
           conversation.participants[uid].isTyping
         ) {
-          let friend = usersStore.getUserById(uid);
+          let friend = userStore.getUserById(uid);
           friend && usersTyping.push(friend[userFieldToReturn]);
         }
       });
@@ -195,8 +194,8 @@ class ChatStore {
     currentConvo &&
       currentConvo.participants &&
       Object.keys(currentConvo.participants).forEach(uid => {
-        if (uid !== usersStore.userId) {
-          let user = usersStore.getUserById(uid);
+        if (uid !== userStore.userId) {
+          let user = userStore.getUserById(uid);
           if (user) users.push(user);
         }
       });
@@ -220,7 +219,7 @@ class ChatStore {
         ? Object.keys(conversation.participants)
         : [];
     const nonUserParticipants = participants.filter(participantId => {
-      return participantId !== usersStore.userId;
+      return participantId !== userStore.userId;
     });
     return nonUserParticipants;
   }

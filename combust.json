@@ -1,4 +1,7 @@
 {
+  "dependencies": {
+    "users": "latest"
+  },
   "installation": {
     "components/App.jsx": {
       "imports": ["import Chatboxes from \"./chat/Chatboxes\";"],
