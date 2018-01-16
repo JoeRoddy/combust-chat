@@ -5,7 +5,8 @@ import UIkit from "uikit";
 
 import Avatar from "../reusable/Avatar";
 import chatStore from "../../stores/ChatStore";
-import userStore from "../../stores/UserStore";
+import userStore, { displayNameField } from "../../stores/UserStore";
+import userSearchService from "../../service/UserSearchService";
 import { formatDate } from "../../helpers/DateHelper";
 
 @observer
@@ -13,8 +14,8 @@ export default class Chatbox extends Component {
   state = {
     message: "",
     addPeopleModal: false,
-    modalQuery: "",
-    modalQueryResults: []
+    newUserQuery: "",
+    newUserQueryResults: []
   };
 
   messageLength = 0;
@@ -55,7 +56,7 @@ export default class Chatbox extends Component {
     UIkit.modal(document.getElementById("modal-add-users-to-convo")).hide();
     chatStore.addParticipantToConversation(user.id, this.props.conversationId);
     this.refs.chatInput.focus();
-    this.setState({ modalQuery: "", modalQueryResults: [] });
+    this.setState({ newUserQuery: "", newUserQueryResults: [] });
   };
 
   scrollToBottom = e => {
@@ -76,23 +77,24 @@ export default class Chatbox extends Component {
     }
   }
 
-  handleModalQuery = e => {
-    const modalQuery = e.target.value;
-    const modalQueryResults = userStore.searchFromLocalUsersByField(
-      "displayName",
-      modalQuery
+  handleUserQuery = e => {
+    const newUserQuery = e.target.value;
+    const newUserQueryResults = userSearchService.searchByField(
+      newUserQuery,
+      displayNameField
     );
-    this.setState({ modalQuery, modalQueryResults });
+    this.setState({ newUserQuery, newUserQueryResults });
   };
 
   render() {
     const { conversationId } = this.props;
+    const conversation = chatStore.getConversation(conversationId);
+
     const messages = chatStore.getMessages(conversationId);
     const usersTyping = chatStore.getUsersTypingByField(
       conversationId,
       "displayName"
     );
-
     const usersInConvo = chatStore.getUsersInConvo(conversationId);
 
     if (
@@ -159,8 +161,8 @@ export default class Chatbox extends Component {
                 />
               ))}
             {usersTyping.length > 0 &&
-              usersTyping.map((email, i) => {
-                return <span key={i}>{email} is typing..</span>;
+              usersTyping.map((displayName, i) => {
+                return <span key={i}>{displayName} is typing..</span>;
               })}
           </div>
         </div>
@@ -191,7 +193,9 @@ export default class Chatbox extends Component {
               uk-tooltip="true"
             />
             <div className="uk-margin">
-              <label className="uk-form-label">Search by email</label>
+              <label className="uk-form-label">
+                Search by {displayNameField}
+              </label>
               <div className="uk-form-controls">
                 <input
                   ref="modalInput"
@@ -200,14 +204,17 @@ export default class Chatbox extends Component {
                   id="form-stacked-text"
                   type="text"
                   placeholder="Email..."
-                  value={this.state.modalQuery}
-                  onChange={this.handleModalQuery}
+                  value={this.state.newUserQuery}
+                  onChange={this.handleUserQuery}
                 />
               </div>
             </div>
-            {this.state.modalQueryResults.length > 0 &&
-              this.state.modalQueryResults.map((u, i) => {
-                return (
+            {conversation &&
+              this.state.newUserQueryResults.length > 0 &&
+              this.state.newUserQueryResults.map((u, i) => {
+                return Object.keys(conversation.participants).includes(
+                  u.id
+                ) ? null : (
                   <div
                     key={i}
                     className="uk-margin-small-top uk-flex uk-flex-between"
