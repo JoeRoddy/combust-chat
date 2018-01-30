@@ -4,7 +4,6 @@ import { observer } from "mobx-react";
 import chatStore from "../../stores/ChatStore";
 import Chatbox from "./Chatbox";
 import "./styles/Chat.css";
-import { database } from "firebase";
 
 const Chatboxes = observer(({ history }) => {
   const convoIds = chatStore.openConversationIds;
