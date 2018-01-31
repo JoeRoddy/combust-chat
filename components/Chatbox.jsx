@@ -259,7 +259,7 @@ const RenderMessageBubble = ({ message, isIncoming }) => {
       uk-tooltip={"pos: " + (isIncoming ? "left" : "right")}
       className={
         "RenderMessageBubble " +
-        (isIncoming ? "uk-background-primary" : "outgoingBubble")
+        (isIncoming ? "incomingBubble" : "outgoingBubble")
       }
     >
       {message.body}

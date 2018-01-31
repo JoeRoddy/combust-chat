@@ -56,18 +56,26 @@
     max-width: 80%;
     .Avatar {
       margin-right: 3px;
+      float: left;
     }
   }
 
   .RenderMessageBubble {
     padding: 4px 9px;
     border-radius: 12px;
-    word-wrap: break-word;
   }
 
   .outgoingBubble {
+    float: right;
+    text-align: right;
     background-color: #f5f1f1;
     color: black;
+  }
+
+  .incomingBubble {
+    max-width: 75%;
+    float: left;
+    background-color: #1e87f0;
   }
 
   .outgoingMsg {
