@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import { observer } from "mobx-react";
 import { Link } from "react-router-dom";
 import UIkit from "uikit";
-import moment from "moment";
 
+import Avatar from "../reusable/Avatar";
 import chatStore from "../../stores/ChatStore";
-import usersStore from "../../stores/UsersStore";
+import userStore from "../../stores/UserStore";
+import userSearchService from "../../service/UserSearchService";
 import { formatDate } from "../../helpers/DateHelper";
 
 @observer
@@ -13,12 +14,13 @@ export default class Chatbox extends Component {
   state = {
     message: "",
     addPeopleModal: false,
-    modalQuery: "",
-    modalQueryResults: []
+    newUserQuery: "",
+    newUserQueryResults: []
   };
 
   messageLength = 0;
   shouldScroll = false;
+  usersTyping = [];
 
   componentDidMount() {
     this.scrollToBottom();
@@ -54,7 +56,7 @@ export default class Chatbox extends Component {
     UIkit.modal(document.getElementById("modal-add-users-to-convo")).hide();
     chatStore.addParticipantToConversation(user.id, this.props.conversationId);
     this.refs.chatInput.focus();
-    this.setState({ modalQuery: "", modalQueryResults: [] });
+    this.setState({ newUserQuery: "", newUserQueryResults: [] });
   };
 
   scrollToBottom = e => {
@@ -75,30 +77,35 @@ export default class Chatbox extends Component {
     }
   }
 
-  handleModalQuery = e => {
-    const modalQuery = e.target.value;
-    const modalQueryResults = usersStore.searchFromLocalUsersByField(
-      "displayName",
-      modalQuery
+  handleUserQuery = e => {
+    const newUserQuery = e.target.value;
+    const newUserQueryResults = userSearchService.searchByField(
+      newUserQuery,
+      "displayName"
     );
-    this.setState({ modalQuery, modalQueryResults });
+    this.setState({ newUserQuery, newUserQueryResults });
   };
 
   render() {
     const { conversationId } = this.props;
+    const conversation = chatStore.getConversation(conversationId);
+
     const messages = chatStore.getMessages(conversationId);
     const usersTyping = chatStore.getUsersTypingByField(
       conversationId,
       "displayName"
     );
-
-    // const convoTitle = chatStore.getConvoTitle(conversationId);
     const usersInConvo = chatStore.getUsersInConvo(conversationId);
 
-    if (messages.length !== this.messageLength) {
-      //new message, scroll to bottom
+    if (
+      messages.length !== this.messageLength ||
+      usersTyping.length !== this.usersTyping.length
+    ) {
+      //new content, scroll to bottom
       this.shouldScroll = true;
     }
+
+    this.usersTyping = usersTyping;
     this.messageLength = messages.length;
 
     return (
@@ -150,12 +157,12 @@ export default class Chatbox extends Component {
                 <RenderMessage
                   key={i}
                   message={m}
-                  isIncoming={m.sentBy !== usersStore.userId}
+                  isIncoming={m.sentBy !== userStore.userId}
                 />
               ))}
             {usersTyping.length > 0 &&
-              usersTyping.map((email, i) => {
-                return <span key={i}>{email} is typing..</span>;
+              usersTyping.map((displayName, i) => {
+                return <span key={i}>{displayName} is typing..</span>;
               })}
           </div>
         </div>
@@ -186,7 +193,7 @@ export default class Chatbox extends Component {
               uk-tooltip="true"
             />
             <div className="uk-margin">
-              <label className="uk-form-label">Search by email</label>
+              <label className="uk-form-label">Find others to chat with</label>
               <div className="uk-form-controls">
                 <input
                   ref="modalInput"
@@ -194,20 +201,23 @@ export default class Chatbox extends Component {
                   className="uk-input"
                   id="form-stacked-text"
                   type="text"
-                  placeholder="Email..."
-                  value={this.state.modalQuery}
-                  onChange={this.handleModalQuery}
+                  placeholder="Search for users..."
+                  value={this.state.newUserQuery}
+                  onChange={this.handleUserQuery}
                 />
               </div>
             </div>
-            {this.state.modalQueryResults.length > 0 &&
-              this.state.modalQueryResults.map((u, i) => {
-                return (
+            {conversation &&
+              this.state.newUserQueryResults.length > 0 &&
+              this.state.newUserQueryResults.map((u, i) => {
+                return Object.keys(conversation.participants).includes(
+                  u.id
+                ) ? null : (
                   <div
                     key={i}
                     className="uk-margin-small-top uk-flex uk-flex-between"
                   >
-                    {u.email}{" "}
+                    {u.displayName}{" "}
                     <button
                       className="uk-button uk-button-primary"
                       onClick={e => this.addUserToConvo(u)}
@@ -226,7 +236,7 @@ export default class Chatbox extends Component {
 
 const RenderMessage = props => {
   const { isIncoming, message } = props;
-  const sentBy = usersStore.getUserById(message.sentBy);
+  const sentBy = userStore.getUserById(message.sentBy);
 
   return (
     <div
@@ -234,10 +244,7 @@ const RenderMessage = props => {
         "RenderMessage " + (isIncoming ? "incomingMsg" : "outgoingMsg")
       }
     >
-      {isIncoming &&
-        sentBy && (
-          <img alt="user avatar" className="avatar" src={sentBy.iconUrl} />
-        )}
+      {isIncoming && sentBy && <Avatar src={sentBy.iconUrl} height={25} />}
       <RenderMessageBubble {...props} />
     </div>
   );
@@ -252,7 +259,7 @@ const RenderMessageBubble = ({ message, isIncoming }) => {
       uk-tooltip={"pos: " + (isIncoming ? "left" : "right")}
       className={
         "RenderMessageBubble " +
-        (isIncoming ? "uk-background-primary" : "outgoingBubble")
+        (isIncoming ? "incomingBubble" : "outgoingBubble")
       }
     >
       {message.body}

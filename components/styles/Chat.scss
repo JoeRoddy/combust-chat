@@ -3,8 +3,6 @@
   bottom: 0;
   right: 0;
   margin-left: 15px;
-  //fix this
-  margin-right: 270px;
   display: flex;
   flex-direction: row-reverse;
   z-index: 2;
@@ -56,22 +54,28 @@
   .RenderMessage {
     margin-bottom: 4px;
     max-width: 80%;
-    .avatar {
-      height: 25px;
-      width: 25px;
+    .Avatar {
       margin-right: 3px;
+      float: left;
     }
   }
 
   .RenderMessageBubble {
     padding: 4px 9px;
     border-radius: 12px;
-    word-wrap: break-word;
   }
-  
+
   .outgoingBubble {
+    float: right;
+    text-align: right;
     background-color: #f5f1f1;
     color: black;
+  }
+
+  .incomingBubble {
+    max-width: 75%;
+    float: left;
+    background-color: #1e87f0;
   }
 
   .outgoingMsg {

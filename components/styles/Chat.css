@@ -3,7 +3,6 @@
   bottom: 0;
   right: 0;
   margin-left: 15px;
-  margin-right: 270px;
   display: flex;
   flex-direction: row-reverse;
   z-index: 2;
@@ -50,19 +49,24 @@
   margin-bottom: 4px;
   max-width: 80%;
 }
-.Chatbox .RenderMessage .avatar {
-  height: 25px;
-  width: 25px;
+.Chatbox .RenderMessage .Avatar {
   margin-right: 3px;
+  float: left;
 }
 .Chatbox .RenderMessageBubble {
   padding: 4px 9px;
   border-radius: 12px;
-  word-wrap: break-word;
 }
 .Chatbox .outgoingBubble {
+  float: right;
+  text-align: right;
   background-color: #f5f1f1;
   color: black;
+}
+.Chatbox .incomingBubble {
+  max-width: 75%;
+  float: left;
+  background-color: #1e87f0;
 }
 .Chatbox .outgoingMsg {
   align-self: flex-end;
