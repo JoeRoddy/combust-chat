@@ -128,8 +128,7 @@ export default class Chatbox extends Component {
           </span>
           <span>
             <button
-              title="Add People"
-              uk-tooltip="true"
+              uk-tooltip="Add People"
               uk-icon="icon: plus-circle; ratio: .8"
               type="button"
               uk-toggle="target: #modal-add-users-to-convo"
@@ -140,8 +139,7 @@ export default class Chatbox extends Component {
             <button
               type="button"
               uk-close="true"
-              title="Close"
-              uk-tooltip="true"
+              uk-tooltip="Close"
               onClick={e => chatStore.markConvoAsClosed(conversationId)}
             />
           </span>
@@ -189,8 +187,7 @@ export default class Chatbox extends Component {
               className="uk-modal-close-default"
               type="button"
               uk-close="true"
-              title="Close"
-              uk-tooltip="true"
+              uk-tooltip="Close"
             />
             <div className="uk-margin">
               <label className="uk-form-label">Find others to chat with</label>
