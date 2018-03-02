@@ -3,7 +3,7 @@ import { observer } from "mobx-react";
 
 import chatStore from "../../stores/ChatStore";
 import Chatbox from "./Chatbox";
-import "./styles/Chat.css";
+import "./styles/Chat.scss";
 
 const Chatboxes = observer(({ history }) => {
   const convoIds = chatStore.openConversationIds;
