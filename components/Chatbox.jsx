@@ -6,7 +6,7 @@ import UIkit from "uikit";
 import Avatar from "../reusable/Avatar";
 import chatStore from "../../stores/ChatStore";
 import userStore from "../../stores/UserStore";
-import userSearchService from "../../service/UserSearchService";
+import userSearchDb from "../../db/UserSearchDb";
 import { formatDate } from "../../helpers/DateHelper";
 
 @observer
@@ -79,7 +79,7 @@ export default class Chatbox extends Component {
 
   handleUserQuery = e => {
     const newUserQuery = e.target.value;
-    const newUserQueryResults = userSearchService.searchByField(
+    const newUserQueryResults = userSearchDb.searchByField(
       newUserQuery,
       "displayName"
     );

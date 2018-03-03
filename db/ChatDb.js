@@ -1,6 +1,6 @@
 import firebase from "firebase";
 
-class ChatService {
+class ChatDb {
   sendMessage(convoId, message) {
     if (!convoId || !message) {
       return;
@@ -120,6 +120,6 @@ class ChatService {
   }
 }
 
-const chatService = new ChatService();
+const chatDb = new ChatDb();
 
-export default chatService;
+export default chatDb;
