@@ -1,7 +1,7 @@
 import { observable, action } from "mobx";
 import _ from "lodash";
 
-import chatService from "../service/ChatService";
+import chatDb from "../db/ChatDb";
 import userStore from "./UserStore";
 
 class ChatStore {
@@ -33,7 +33,7 @@ class ChatStore {
   }
 
   loadConversationsForUser = user => {
-    chatService.listenToUsersConversationIds(user.id, (err, convoId) => {
+    chatDb.listenToUsersConversationIds(user.id, (err, convoId) => {
       err ? console.log(err) : this.listenToConversation(convoId);
     });
   };
@@ -46,7 +46,7 @@ class ChatStore {
     }
     this.messagesByConversation.set(convoId, {});
     this.listenToConversation(convoId);
-    chatService.listenForNewMessages(convoId, (err, msg) => {
+    chatDb.listenForNewMessages(convoId, (err, msg) => {
       if (err || !msg) {
         return console.log(err || "Null msg!");
       }
@@ -65,7 +65,7 @@ class ChatStore {
 
   @action
   listenToConversation = cid => {
-    chatService.listenToConversation(cid, convo => {
+    chatDb.listenToConversation(cid, convo => {
       if (this.conversationContainsNewMessages(cid, convo)) {
         const participants = this.getOtherParticipantIdsInConversation(convo);
         this.openConversationWithUsers(participants);
@@ -97,7 +97,7 @@ class ChatStore {
       body: messageBody,
       sentBy: userId
     };
-    chatService.sendMessage(conversationId, message);
+    chatDb.sendMessage(conversationId, message);
   }
 
   @action
@@ -111,7 +111,7 @@ class ChatStore {
       this.loadMessagesForConversation(existingConvo.id);
     } else {
       const participants = friendIds.concat([userStore.userId]);
-      chatService.createConversation(participants, (err, convoId) => {
+      chatDb.createConversation(participants, (err, convoId) => {
         this.markConvoAsOpen(convoId);
         this.loadMessagesForConversation(convoId);
       });
@@ -166,7 +166,7 @@ class ChatStore {
    */
   toggleUserTyping(convoId, isTyping) {
     const userId = userStore.userId;
-    chatService.toggleUserTyping(convoId, userId, isTyping);
+    chatDb.toggleUserTyping(convoId, userId, isTyping);
   }
 
   /**
