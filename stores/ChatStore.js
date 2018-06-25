@@ -176,8 +176,7 @@ class ChatStore {
    * @param {string} userFieldToReturn
    * @return {array}
    */
-  getUsersTypingByField(convoId, userFieldToReturn) {
-    userFieldToReturn = userFieldToReturn || "displayName";
+  getUsersTypingByField(convoId, userFieldToReturn = "displayName") {
     let usersTyping = [];
     const conversation = this.getConversation(convoId);
     conversation &&

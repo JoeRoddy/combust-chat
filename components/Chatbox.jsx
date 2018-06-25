@@ -6,7 +6,7 @@ import UIkit from "uikit";
 import Avatar from "../reusable/Avatar";
 import chatStore from "../../stores/ChatStore";
 import userStore from "../../stores/UserStore";
-import userSearchDb from "../../db/UserSearchDb";
+import userDb from "../../db/UserDb";
 import { formatDate } from "../../helpers/DateHelper";
 
 @observer
@@ -79,7 +79,7 @@ export default class Chatbox extends Component {
 
   handleUserQuery = e => {
     const newUserQuery = e.target.value;
-    const newUserQueryResults = userSearchDb.searchByField(
+    const newUserQueryResults = userDb.searchByField(
       newUserQuery,
       "displayName"
     );
@@ -129,6 +129,7 @@ export default class Chatbox extends Component {
           <span>
             <button
               uk-tooltip="Add People"
+              title="Add People" // bugfix
               uk-icon="icon: plus-circle; ratio: .8"
               type="button"
               uk-toggle="target: #modal-add-users-to-convo"
@@ -140,6 +141,7 @@ export default class Chatbox extends Component {
               type="button"
               uk-close="true"
               uk-tooltip="Close"
+              title="Close" // bugfix
               onClick={e => chatStore.markConvoAsClosed(conversationId)}
             />
           </span>
@@ -167,7 +169,7 @@ export default class Chatbox extends Component {
         <div className="message-input">
           <span
             uk-icon="icon: comment"
-            uk-tooltip="pos: right"
+            uk-tooltip="pos: top"
             title="Send"
             onClick={this.handleMessageSubmit}
           />
