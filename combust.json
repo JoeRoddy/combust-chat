@@ -15,6 +15,42 @@
       }
     }
   },
+  "installation_mobile": {
+    "components/users/Profile.js": {
+      "imports": ["import chatStore from \"../../stores/ChatStore\";"],
+      "replace": [
+        {
+          "pattern":
+            "alert(\"Execute from your terminal:\", \"combust install chat\");\n",
+          "code": [
+            "chatStore.openConversationWithUser(userId);",
+            "nav.navigate(\"ChatScreen\", { participantIds: [userId] });"
+          ]
+        }
+      ]
+    },
+    "components/reusable/SideMenu.js": {
+      "after": {
+        "pattern": "const COMBUST_MENU_ITEMS = [",
+        "code": [
+          "{title: \"My Messages\",icon: \"message\",onPress: () => nav.navigate(\"MyMessages\")},"
+        ]
+      }
+    },
+    "components/Routes.js": {
+      "imports": [
+        "import MyMessages from \"./chat/MyMessages\";",
+        "import ChatScreen from \"./chat/ChatScreen\";"
+      ],
+      "after": {
+        "pattern": "const COMBUST_SCREENS = {",
+        "code": [
+          "ChatScreen: { screen: ChatScreen, path: \"/ChatScreen\" },",
+          "MyMessages: { screen: MyMessages, path: \"/MyMessages\" }"
+        ]
+      }
+    }
+  },
   "rules": {
     "conversationsByUser": {
       "$uid": {
