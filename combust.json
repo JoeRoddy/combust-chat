@@ -51,6 +51,9 @@
       }
     }
   },
+  "npm_dependencies_mobile": {
+    "react-native-gifted-chat": "^0.4.3"
+  },
   "rules": {
     "conversationsByUser": {
       "$uid": {
