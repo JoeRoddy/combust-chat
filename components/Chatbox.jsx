@@ -32,6 +32,9 @@ export default class Chatbox extends Component {
       this.shouldScroll = false;
       this.scrollToBottom();
     }
+    if (props.conversationId) {
+      chatStore.markConversationAsRead(props.conversationId);
+    }
   };
 
   handleMessageChange = e => {
