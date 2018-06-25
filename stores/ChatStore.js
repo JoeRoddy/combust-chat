@@ -39,7 +39,7 @@ class ChatStore {
   };
 
   @action
-  loadMessagesForConversation(convoId, predefinedMessages) {
+  loadMessagesForConversation(convoId) {
     if (this.messagesByConversation.get(convoId)) {
       //already listening to this convo's messages
       return;
@@ -64,15 +64,31 @@ class ChatStore {
   }
 
   @action
-  listenToConversation = cid => {
-    chatDb.listenToConversation(cid, convo => {
-      if (this.conversationContainsNewMessages(cid, convo)) {
-        const participants = this.getOtherParticipantIdsInConversation(convo);
-        this.openConversationWithUsers(participants);
+  listenToConversation = convoId => {
+    chatDb.listenToConversation(convoId, convo => {
+      if (this.conversationContainsNewMessages(convoId, convo)) {
+        this.openConversationById(convoId);
       }
-      this.conversationMap.set(cid, convo);
+      this.conversationMap.set(convoId, convo);
     });
   };
+
+  @action
+  openConversationById(convoId) {
+    this.markConvoAsOpen(convoId);
+    this.loadMessagesForConversation(convoId);
+  }
+
+  getConversationTitle(convoId) {
+    const usersInConvo = this.getUsersInConvo(convoId);
+    let title = "";
+    usersInConvo &&
+      usersInConvo.forEach((user, i) => {
+        title +=
+          user && user.displayName + (i < usersInConvo.length - 1 ? ", " : "");
+      });
+    return title;
+  }
 
   findExistingConversationWithParticipants(friendIds) {
     const existingConvoEntry = this.conversationMap
@@ -81,7 +97,7 @@ class ChatStore {
         const participants =
           convo && convo.participants && Object.keys(convo.participants);
         if (participants && participants.length === friendIds.length + 1) {
-          let nonInclusion = friendIds.find(fid => {
+          const nonInclusion = friendIds.find(fid => {
             return !participants.includes(fid);
           });
           return nonInclusion ? false : true;
@@ -105,7 +121,6 @@ class ChatStore {
     const existingConvo = this.findExistingConversationWithParticipants(
       friendIds
     );
-    debugger;
     if (existingConvo) {
       this.markConvoAsOpen(existingConvo.id);
       this.loadMessagesForConversation(existingConvo.id);
@@ -118,6 +133,7 @@ class ChatStore {
     }
   }
 
+  @action
   openConversationWithUser(friendId) {
     this.openConversationWithUsers([friendId]);
   }
@@ -126,15 +142,12 @@ class ChatStore {
   markConvoAsOpen(convoId) {
     if (!this.openConversationIds.includes(convoId)) {
       this.openConversationIds.push(convoId);
-    } else {
-      //redudant call for some reason..
-      debugger;
     }
   }
 
   @action
   markConvoAsClosed(convoId) {
-    let i = this.openConversationIds.findIndex(iteratorId => {
+    const i = this.openConversationIds.findIndex(iteratorId => {
       return convoId === iteratorId;
     });
     i >= 0 && this.openConversationIds.splice(i, 1);
@@ -151,7 +164,7 @@ class ChatStore {
 
   getMessages(convoId) {
     let messages = [];
-    let msgsObj = this.messagesByConversation.get(convoId);
+    const msgsObj = this.messagesByConversation.get(convoId);
     msgsObj &&
       Object.keys(msgsObj).forEach(msgId => {
         messages.push(msgsObj[msgId]);
@@ -186,7 +199,7 @@ class ChatStore {
           uid !== userStore.userId &&
           conversation.participants[uid].isTyping
         ) {
-          let friend = userStore.getUserById(uid);
+          const friend = userStore.getUserById(uid);
           friend && usersTyping.push(friend[userFieldToReturn]);
         }
       });
@@ -194,13 +207,13 @@ class ChatStore {
   }
 
   getUsersInConvo(convoId) {
-    let currentConvo = this.conversationMap.get(convoId);
+    const currentConvo = this.conversationMap.get(convoId);
     let users = [];
     currentConvo &&
       currentConvo.participants &&
       Object.keys(currentConvo.participants).forEach(uid => {
         if (uid !== userStore.userId) {
-          let user = userStore.getUserById(uid);
+          const user = userStore.getUserById(uid);
           if (user) users.push(user);
         }
       });
@@ -235,6 +248,10 @@ class ChatStore {
     participants.push(userId);
     this.markConvoAsClosed(conversationId);
     this.openConversationWithUsers(participants);
+  }
+
+  markConversationAsRead(convoId) {
+    chatDb.markConversationAsReadByUser(convoId, userStore.userId);
   }
 }
 
