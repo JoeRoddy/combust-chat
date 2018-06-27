@@ -46,7 +46,7 @@
         "pattern": "const COMBUST_SCREENS = {",
         "code": [
           "ChatScreen: { screen: ChatScreen, path: \"/ChatScreen\" },",
-          "MyMessages: { screen: MyMessages, path: \"/MyMessages\" }"
+          "MyMessages: { screen: MyMessages, path: \"/MyMessages\" },"
         ]
       }
     }
