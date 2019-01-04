@@ -1,5 +1,4 @@
 import { observable, action } from "mobx";
-import _ from "lodash";
 
 import chatDb from "../db/ChatDb";
 import userStore from "./UserStore";
@@ -59,7 +58,9 @@ class ChatStore {
 
       let messages = this.messagesByConversation.get(convoId) || {};
       messages[msg.id] = msg;
-      this.messagesByConversation.set(convoId, _.clone(messages));
+
+      // clone messages to force mobx update
+      this.messagesByConversation.set(convoId, Object.assign({}, messages));
     });
   }
 
