@@ -10,7 +10,7 @@ import userDb from "../../db/UserDb";
 import { formatDate } from "../../helpers/DateHelper";
 
 @observer
-export default class Chatbox extends Component {
+class Chatbox extends Component {
   state = {
     message: "",
     addPeopleModal: false,
@@ -235,6 +235,8 @@ export default class Chatbox extends Component {
     );
   }
 }
+
+export default Chatbox;
 
 const RenderMessage = props => {
   const { isIncoming, message } = props;

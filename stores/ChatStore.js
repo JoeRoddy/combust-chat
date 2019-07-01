@@ -92,20 +92,22 @@ class ChatStore {
   }
 
   findExistingConversationWithParticipants(friendIds) {
-    const existingConvoEntry = this.conversationMap
-      .entries()
-      .find(([convoId, convo]) => {
-        const participants =
-          convo && convo.participants && Object.keys(convo.participants);
-        if (participants && participants.length === friendIds.length + 1) {
-          const nonInclusion = friendIds.find(fid => {
-            return !participants.includes(fid);
-          });
-          return nonInclusion ? false : true;
+    if (!this.conversationMap.entries()) return null;
+    let existingConvoEntry;
+    this.conversationMap.forEach(convo => {
+      //TODO: clean this nasty function
+      const participants =
+        convo && convo.participants && Object.keys(convo.participants);
+      if (participants && participants.length === friendIds.length + 1) {
+        const nonInclusion = friendIds.find(fid => {
+          return !participants.includes(fid);
+        });
+        if (!nonInclusion) {
+          existingConvoEntry = convo;
         }
-        return false;
-      });
-    return (existingConvoEntry && existingConvoEntry[1]) || null;
+      }
+    });
+    return existingConvoEntry || null;
   }
 
   sendMessage(conversationId, messageBody) {
