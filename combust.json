@@ -3,11 +3,11 @@
     "users": "latest"
   },
   "installation": {
-    "components/App.jsx": {
+    "src/components/App.jsx": {
       "imports": ["import Chatboxes from \"./chat/Chatboxes\";"],
       "renderEnd": ["<Chatboxes {...this.props} />"]
     },
-    "components/users/Profile.jsx": {
+    "src/components/users/Profile.jsx": {
       "imports": ["import chatStore from \"../../stores/ChatStore\";"],
       "replace": {
         "pattern": "alert(\"combust install chat\");\n",
@@ -16,12 +16,11 @@
     }
   },
   "installation_mobile": {
-    "components/users/Profile.js": {
+    "src/components/users/Profile.js": {
       "imports": ["import chatStore from \"../../stores/ChatStore\";"],
       "replace": [
         {
-          "pattern":
-            "alert(\"Execute from your terminal:\", \"combust install chat\");\n",
+          "pattern": "alert(\"Execute from your terminal:\", \"combust install chat\");\n",
           "code": [
             "chatStore.openConversationWithUser(userId);",
             "nav.navigate(\"ChatScreen\", { participantIds: [userId] });"
@@ -29,7 +28,7 @@
         }
       ]
     },
-    "components/reusable/SideMenu.js": {
+    "src/components/reusable/SideMenu.js": {
       "after": {
         "pattern": "const COMBUST_MENU_ITEMS = [",
         "code": [
@@ -37,7 +36,7 @@
         ]
       }
     },
-    "components/Routes.js": {
+    "src/components/Routes.js": {
       "imports": [
         "import MyMessages from \"./chat/MyMessages\";",
         "import ChatScreen from \"./chat/ChatScreen\";"
@@ -66,8 +65,7 @@
     "conversations": {
       "$convoId": {
         ".read": "data.child('participants').child(auth.uid).exists()",
-        ".write":
-          "!data.exists() || data.child('participants').child(auth.uid).exists()"
+        ".write": "!data.exists() || data.child('participants').child(auth.uid).exists()"
       }
     },
     "messages": {
