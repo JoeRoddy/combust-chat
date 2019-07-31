@@ -6,7 +6,6 @@ import UIkit from "uikit";
 import Avatar from "../reusable/Avatar";
 import chatStore from "../../stores/ChatStore";
 import userStore from "../../stores/UserStore";
-import userDb from "../../db/UserDb";
 import { formatDate } from "../../helpers/DateHelper";
 
 @observer
@@ -80,13 +79,22 @@ class Chatbox extends Component {
     }
   }
 
-  handleUserQuery = e => {
+  handleUserQuery = async e => {
     const newUserQuery = e.target.value;
-    const newUserQueryResults = userDb.searchByField(
-      newUserQuery,
-      "displayName"
-    );
-    this.setState({ newUserQuery, newUserQueryResults });
+    try {
+      const newUserQueryResults = await userStore.searchByField(
+        newUserQuery,
+        "email"
+      );
+      this.setState({ newUserQuery, newUserQueryResults });
+    } catch (error) {
+      if (error.message.includes("Failed to fetch")) {
+        return prompt(
+          "Install the user search feature first!\nIn the console, execute:",
+          "combust install user-search"
+        );
+      }
+    }
   };
 
   render() {
