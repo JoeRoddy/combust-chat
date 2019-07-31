@@ -4,7 +4,7 @@
   },
   "installation": {
     "src/components/app/App.jsx": {
-      "imports": ["import Chatboxes from \"./chat/Chatboxes\";"],
+      "imports": ["import Chatboxes from \"../chat/Chatboxes\";"],
       "renderEnd": ["<Chatboxes {...this.props} />"]
     },
     "src/components/users/Profile.jsx": {
@@ -38,8 +38,8 @@
     },
     "src/components/app/Routes.js": {
       "imports": [
-        "import MyMessages from \"./chat/MyMessages\";",
-        "import ChatScreen from \"./chat/ChatScreen\";"
+        "import MyMessages from \"../chat/MyMessages\";",
+        "import ChatScreen from \"../chat/ChatScreen\";"
       ],
       "after": {
         "pattern": "const COMBUST_SCREENS = {",
