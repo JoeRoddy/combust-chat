@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import UIkit from "uikit";
 
 import Avatar from "../reusable/Avatar";
-import chatStore from "../../stores/ChatStore";
-import userStore from "../../stores/UserStore";
-import { formatDate } from "../../helpers/DateHelper";
+import chatStore from "../../stores/chatStore";
+import userStore from "../../stores/userStore";
+import { formatDate } from "../../helpers/dateHelper";
 
 @observer
 class Chatbox extends Component {

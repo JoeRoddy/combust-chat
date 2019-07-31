@@ -3,12 +3,12 @@
     "users": "latest"
   },
   "installation": {
-    "src/components/App.jsx": {
+    "src/components/app/App.jsx": {
       "imports": ["import Chatboxes from \"./chat/Chatboxes\";"],
       "renderEnd": ["<Chatboxes {...this.props} />"]
     },
     "src/components/users/Profile.jsx": {
-      "imports": ["import chatStore from \"../../stores/ChatStore\";"],
+      "imports": ["import chatStore from \"../../stores/chatStore\";"],
       "replace": {
         "pattern": "alert(\"combust install chat\");\n",
         "code": ["chatStore.openConversationWithUser(userId);"]
@@ -17,7 +17,7 @@
   },
   "installation_mobile": {
     "src/components/users/Profile.js": {
-      "imports": ["import chatStore from \"../../stores/ChatStore\";"],
+      "imports": ["import chatStore from \"../../stores/chatStore\";"],
       "replace": [
         {
           "pattern": "alert(\"Execute from your terminal:\", \"combust install chat\");\n",
@@ -36,7 +36,7 @@
         ]
       }
     },
-    "src/components/Routes.js": {
+    "src/components/app/Routes.js": {
       "imports": [
         "import MyMessages from \"./chat/MyMessages\";",
         "import ChatScreen from \"./chat/ChatScreen\";"

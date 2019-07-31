@@ -9,9 +9,9 @@ import {
 import { observer } from "mobx-react";
 import moment from "moment";
 
-import nav from "../../helpers/NavigatorHelper";
-import chatStore from "../../stores/ChatStore";
-import userStore from "../../stores/UserStore";
+import nav from "../../helpers/navigatorHelper";
+import chatStore from "../../stores/chatStore";
+import userStore from "../../stores/userStore";
 import { Screen } from "../reusable";
 
 @observer

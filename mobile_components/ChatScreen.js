@@ -10,9 +10,9 @@ import {
 import { observer } from "mobx-react";
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
 
-import nav from "../../helpers/NavigatorHelper";
-import chatStore from "../../stores/ChatStore";
-import userStore from "../../stores/UserStore";
+import nav from "../../helpers/navigatorHelper";
+import chatStore from "../../stores/chatStore";
+import userStore from "../../stores/userStore";
 import { colors } from "../../assets/styles/AppStyles";
 import { Screen } from "../reusable";
 

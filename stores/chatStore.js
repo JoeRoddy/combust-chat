@@ -1,7 +1,7 @@
 import { observable, action } from "mobx";
 
-import chatDb from "../db/ChatDb";
-import userStore from "./UserStore";
+import chatDb from "../db/chatDb";
+import userStore from "./userStore";
 
 class ChatStore {
   init() {

@@ -1,7 +1,7 @@
 import React from "react";
 import { observer } from "mobx-react";
 
-import chatStore from "../../stores/ChatStore";
+import chatStore from "../../stores/chatStore";
 import Chatbox from "./Chatbox";
 import "./styles/Chat.scss";
 
